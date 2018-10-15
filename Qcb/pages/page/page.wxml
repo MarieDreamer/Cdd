@@ -1,0 +1,22 @@
+<import src="../../js/wxParse/wxParse.wxml"></import>
+<view class="container">
+    <view class="page-con" style="background:url(\"https://cc.hohiw.com/xcximg/wf-bg.png\");-webkit-background-size:100% 100%;">
+        <view class="page-con-c">
+            <scroll-view scrollY="true" style="height: 760rpx">
+                <!-- <template is="wxParse" data="{{wxParseData:content.nodes}}"></template> -->
+                 <view class='wxParse-p'>
+                 <view class='WxEmojiView wxParse-inline' wx:for="{{rulearray}}" wx:for-item="list" wx:key="key">
+                 {{list.content}}
+                  </view>
+                  <!-- <view class='WxEmojiView wxParse-inline'>
+                    单或双，二选一，猜中即为中奖！商城 采用 公平、公正、权威的第三方数据（重庆时时彩）相对应档期开奖尾数的单双作为是否中奖的依据（1、3、5、7、9为单，0、2、4、6、8为双）出奖结果非“单”即“双”，中奖几率50%，谁也无法篡改出奖结果。
+                  </view> -->
+                </view> 
+
+                
+
+                
+            </scroll-view>
+        </view>
+    </view>
+</view>

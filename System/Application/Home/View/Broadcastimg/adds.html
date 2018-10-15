@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <title>后台</title>
+    <link href="/Css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+    <link href="/Css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+    <link href="/Css/animate.min.css" rel="stylesheet">
+    <link href="/Css/style.min.css?v=4.0.0" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/Css/webuploader.css">
+    <link rel="stylesheet" type="text/css" href="/Css/diyUpload.css">
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="form-horizontal m-t" id="commentForm">
+                        <h2><div  class="col-sm-2"></div>添加图片</h2>
+                        
+                        
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">url</label>
+                            <div class="col-sm-8">
+                                <input type="text" size="30" name="class1" size="80" minlength="6" maxlength="60" class="form-control"  id="url" value="<?php echo $result['url'];?>"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                                <label class="col-sm-2 control-label">类型</label>
+                                <div class="col-sm-8">
+                                    <input type="text" size="30" name="class1" size="80" minlength="6" maxlength="60" class="form-control"  id="leixing"/>
+                                </div>
+                            </div>
+                        
+                        <div class="form-horizontal" id="step2">
+                            <div class="form-group">
+                                <label class="control-label col-sm-2">封面图片上传：</label>
+                                <div class="col-sm-10">
+                                    <div id="file_upload" ></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                        
+                        
+                        
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-3">
+                                <input type="hidden" id='id' value="<?php echo I('param.id');?>">
+                                <button class="btn btn-primary" type="button" id="adds">提交</button>
+                                <a href="/Broadcastimg/lists"><button class="btn btn-white" type="button">取消</button></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // alert($ajaxReturnData['data'])
+    
+</script>
+<script src="/Js/jquery.min.js?v=2.1.4"></script>
+<script type="text/javascript" src="/Js/webuploader.html5only.min.js"></script>
+<script type="text/javascript" src="/Js/diyUpload.js"></script>
+<script type="text/javascript">
+    $(document).on('change','.category',function(){
+        var that=$(this)
+        var attr_value=that.parent().parent('.form-group').attr('attr_value');
+        console.log(attr_value);
+        
+        $(".rem").each(function(){
+            attrvalue=$(this).attr("attr_value");
+            // console.log(attrvalue);
+            if (attrvalue>attr_value) {
+                $(this).remove();
+            };
+        });
+        var category_id=$(this).val();
+        // console.log(category_id);
+        attr_value++;
+        $.ajax({
+            url:'/Category/get_do', 
+            data:{
+                "category_id":category_id
+            },
+            type:'post',
+            dataType:"json",
+            success:function(data){
+                if(data.status){
+                    if (data.results) {
+                        console.log(data);
+                        var html_de='<div class="form-group rem" attr_value='+attr_value+'><label class="col-sm-2 control-label"></label><div class="col-sm-8"><select class="form-control category categorypid"><option value ="0">请选择</option>';
+                        for (var i = 0; i < data.results.length; i++) {
+                            html_de+='<option class="op" value ="'+data.results[i].id+'">'+data.results[i].name+'</option>'
+                        }
+                        html_de+='</select></div></div>';
+                        that.parent().parent('.form-group').after(html_de);
+                    }
+                }else{
+                    
+                } 
+            },
+        });
+    })
+    var image_url=[];
+    var img_url=[];
+    $('#file_upload').diyUpload({
+        url:'/Commodity/upload_do',
+        success:function( data ) {
+            image_url.push(data._raw);
+            console.log(image_url);
+        },
+        error:function( err ) {
+            console.info( err );    
+        },
+        buttonText : '选择文件',
+        chunked:true,
+        // 分片大小
+        chunkSize:1024 * 1024,
+        //最大上传的文件数量, 总文件大小,单个文件大小(单位字节);
+        fileNumLimit:1,
+        fileSizeLimit:500000 * 1024,
+        fileSingleSizeLimit:50000 * 1024,
+        accept: {}
+    });
+
+
+    $("#adds").click(function(){
+    });
+
+    $(document).on('click','#adds',function(){
+        var url=$('#url').val();
+        var leixing=$('#leixing').val();
+        if(!url){
+            url = "空";
+        }
+        // console.log(album_class);
+        // console.log(category_id);
+
+        if(image_url[1]){
+            alert("只能上传一张图片")
+        }else{
+            $.ajax({
+                url:'/Broadcastimg/adds_do', 
+                data:{
+                    "image_url":image_url,
+                    "url":url,
+                    "class":leixing
+
+                },
+                type:'post',
+                dataType:"json",
+                success:function(data){
+                    if(data.status){
+                        
+                        alert('添加成功');
+                        window.location="/Broadcastimg/lists";
+                    }else{
+                        alert(data.message)
+                    }
+                }
+            });
+        }
+        
+        
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content=cetial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <title>后台</title>
+    <!--[if lt IE 8]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+    <![endif]-->
+    <link href="/Css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+    <link href="/Css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+    <link href="/Css/animate.min.css" rel="stylesheet">
+    <link href="/Css/style.min.css?v=4.0.0" rel="stylesheet">
+    <link href="/Css/paging.css" rel="stylesheet">
+
+</head>
+<body>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <!-- Panel Other -->
+    <div class="ibox float-e-margins">
+        
+        <div class="ibox-content">
+            <div class="row row-lg">
+                <div class="col-sm-12">
+                    <!-- Example Toolbar -->
+                    <div class="example-wrap">
+                        <div class="example">
+                            <h1>订单管理</h1>
+                            <table data-toggle="table" class="table table-hover"  data-mobile-responsive="true">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th align="center">用户名</th>
+                                        <th align="center">订单编号</th>
+                                        <th align="center">订单状态</th>
+                                        <th align="center">订单总额</th>
+                                        <th align="center">商品数量</th>
+                                        <th align="center">下单时间</th>
+                                        <th align="center">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   <volist name="results" id="vo">
+                                    <tr target="sid_user" rel="{$vo['id']}">
+                                        <td class="id">{$vo['id']}</td>
+                                        <td>{$vo['nickname']}</td>
+                                        <td>{$vo['order_number']}</td>
+                                        <td>{$vo['shop_status_str']}</td>
+                                        <td>{$vo["total_price"]}</td>
+                                        <td>{$vo["total_num"]}</td>
+                                        <td>{$vo["create_time"]|date="Y-m-d H:i:s",###}</td>
+                                        <td>
+                                            <a href="/Order/detail?order_id={$vo['id']}">查看详情</a>&nbsp;&nbsp;&nbsp;
+                                            <?php if($vo['shop_status']==1){ ?>
+                                                <a id="2" class="shop_status">发货</a>
+                                            <?php }?>
+                                            <?php if($vo['shop_status']==2){ ?>
+                                                <a id="3" class="shop_status">确认收货</a>
+                                            <?php }?>
+                                        </td>
+                                    </tr>
+                                    </volist>
+                                </tbody>
+                            </table>
+                           <div class="paggings">
+                           {$paging}
+                        </div>
+                    </div>
+                </div>    
+                    <!-- End Example Toolbar -->
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+</div> 
+<div class="modal fade" id="ajax_container" tabindex="-1" role="dialog" aria-labelledby="ajax_container" aria-hidden="true"> 
+</div>
+<script src="/Js/jquery.min.js?v=2.1.4"></script>
+<script src="/Js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+    $(document).on('click','.shop_status',function(){
+        var status = $(this).attr("id");
+        var str = '';
+        if(status == 2){
+            str = "确定发货吗？";
+        }else if(status == 3){
+            str = "确定收货吗？";
+        }
+        if(confirm(str)){
+            var id=$(this).parent().siblings('.id').text();
+            $.ajax({
+                url:'/Order/changeStatus',
+                data:{
+                    "id":id,
+                    "status":status
+                },
+                type:'post',
+                dataType:"json",
+                success:function(data){
+                    if(data.status){
+                        alert(data.message);
+                        window.location="/Order/lists";
+                    }else{
+                        alert(data.message)
+                    }
+                },
+            });
+        }
+    })
+
+</script>
+</body>

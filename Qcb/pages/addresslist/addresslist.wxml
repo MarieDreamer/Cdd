@@ -1,0 +1,39 @@
+<view class="container">
+    <view class="list-con">
+        <view bindtap='choose' class="list" wx:for="{{address_lists}}" wx:for-item="list" wx:key="k" data-id="{{list.id}}">
+            <view bindtap="DefaultAddr" class="list-t" data-index="{{index}}">
+                <text>{{list.consignee}}</text>
+                <text>{{list.mobile}}</text>
+            </view>
+            <view bindtap="DefaultAddr" class="list-c" data-index="{{index}}">
+                <text>{{list.region}}{{list.address}}</text>
+            </view>
+            <view class="list-d">
+                <view bindtap="DefaultAddr" class="list-d-lt " data-index="{{index}}">
+                    <image src="https://wechat.cdd.jianfengweb.com/images/xz.png" wx:if="{{list.is_default==1}}"></image>
+                    <image src="https://wechat.cdd.jianfengweb.com/images/wxz.png" wx:if="{{list.is_default==0}}"></image>
+                    <text>默认地址</text>
+                </view>
+                <view class="list-d-rt"  data-id="{{list.id}}">
+                        <view class="list-d-rt-l" data-id="{{list.id}}" bindtap='Go_address_edit'>
+                            <image bindtap='Go_address_edit' data-id="{{list.id}}" src="https://wechat.cdd.jianfengweb.com/images/edit.png"></image>
+                            <text>编辑</text>
+                        </view>
+                    <view bindtap="DelAddress" data-id="{{list.id}}" class="list-d-rt-l" >
+                        <image src="https://wechat.cdd.jianfengweb.com/images/dell.png"></image>
+                        删除
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <view wx:if="{{show_no_data==1}}">
+        <view class="no-data-tip">暂无收货地址</view>
+    </view>
+    <navigator class="navbut" url="/pages/address/address?source={{source}}">
+        <view class="but">
+            <button>新增地址</button>
+        </view>
+    </navigator>
+</view>
+<view style='height:85rpx;'></view>
